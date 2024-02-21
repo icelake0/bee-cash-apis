@@ -1,15 +1,16 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UpdateUserDto } from './dto';
+import { UpdateUserDto, UpdateUserPasswordDto } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import * as argon from 'argon2';
 
 @Injectable()
 export class UserService {
     constructor(
         private prisma: PrismaService
-    ) {}
-    async updateAuthUser(user : User, dto: UpdateUserDto) {
+    ) { }
+    async updateAuthUser(user: User, dto: UpdateUserDto) {
         try {
             const updatedUser = await this.prisma.user.update({
                 where: {
@@ -38,5 +39,37 @@ export class UserService {
             }
             throw error;
         }
+    }
+
+    async updateAuthUserPassword(authUser: User, dto: UpdateUserPasswordDto) {
+        const user =
+          await this.prisma.user.findUnique({
+            where: {
+              id: authUser.id,
+            },
+          });
+          
+        const passwordIsvalid = await argon.verify(
+            user.password,
+            dto.currentPassword,
+        );
+
+        if (!passwordIsvalid)
+            throw new ForbiddenException(
+                'Credentials incorrect',
+            );
+        
+        const password = await argon.hash(dto.password);
+
+        const updatedUser = await this.prisma.user.update({
+            where: {
+                id: user.id
+            },
+            data: {
+                password: password
+            },
+        });
+        delete updatedUser.password;
+        return updatedUser;
     }
 }
