@@ -16,7 +16,7 @@ export class TransactionController {
     }
 
     @Get('auth-user/seed')
-    seeAuthUserTransactions(@AuthUser() user: User) {
+    seedAuthUserTransactions(@AuthUser() user: User) {
         return user;
     }
 }

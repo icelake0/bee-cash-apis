@@ -25,8 +25,11 @@ export class AuthService {
                     username: dto.username,
                     password: password,
                     firstName: dto.firstName,
-                    lastName: dto.lastName
-                },
+                    lastName: dto.lastName,
+                    wallet: {
+                        create: { },
+                    },
+                }
             });
             delete user.password;
             const access_token: string = await this.signToken(user.id, user.email);
