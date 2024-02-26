@@ -64,6 +64,7 @@ export class WalletService {
                     status: TransactionStatus.PENDING,
                     walletId: sender.wallet.id,
                     userId: sender.id,
+                    amount: dto.amount,
                     previousBalance: previousSenderBalance,
                     newBalance: newSenderBalance
                 }
@@ -79,6 +80,7 @@ export class WalletService {
                     status: TransactionStatus.PENDING,
                     walletId: receiver.wallet.id,
                     userId: receiver.id,
+                    amount: dto.amount,
                     previousBalance: previousReceiverBalance,
                     newBalance: newReceiverBalance
                 }
@@ -115,17 +117,5 @@ export class WalletService {
             }
 
         });
-        //create a pending DR transaction record 
-        //generate a DR transaction  refrence id
-        //update the transaction with the refrence
-        //check if balance can make transactions
-        //get the CR user
-        //create a pending CR transaction
-        //update the DR wallet balance 
-        //update the CR wallet balance 
-        //set CR transaction status as completed 
-        //Set DR transaction status as completed 
-        //Return both CR and DR transaction in response
-        //end database transaction
     }
 }

@@ -59,6 +59,7 @@ model Transaction {
   userId Int
   user User @relation(fields: [userId], references: [id])
 
+  amount Float 
   previousBalance Float
   newBalance Float
 
