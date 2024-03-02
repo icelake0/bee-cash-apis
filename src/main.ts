@@ -11,6 +11,6 @@ async function bootstrap() {
     }),
   );
   app.useGlobalInterceptors(new ResponseFormatInterceptor());
-  await app.listen(4010);
+  await app.listen(process.env.PORT || 4010);
 }
 bootstrap();
