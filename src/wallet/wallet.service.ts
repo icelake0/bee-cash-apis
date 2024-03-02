@@ -1,7 +1,7 @@
 import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { TransactionStatus, TransactionType, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { SendMoneyDto } from './dto';
+import { SendMoneyDto, TopUpWalletDto } from './dto';
 
 @Injectable()
 export class WalletService {
@@ -124,6 +124,49 @@ export class WalletService {
             where: {
                 userId: user.id
             }
+        });
+    }
+
+    async topupWallet(walletUser: User, dto: TopUpWalletDto) {
+
+        return await this.prisma.$transaction(async (tx) => {
+            
+            const user = await tx.user.findUnique({
+                where: {
+                    id: walletUser.id
+                },
+                include: {
+                    wallet: true
+                }
+            });
+
+            const previousBalance = user.wallet.balance;
+            const newBalance = user.wallet.balance + dto.amount
+            const transactionRef = 'Ref-Bee-Cash-' + Date.now()+ "-TOPUP-CR"
+
+            const wallet = await tx.wallet.update({
+                where: {
+                    id: user.wallet.id
+                },
+                data: {
+                    balance: newBalance
+                }
+            })
+            const transaction = await tx.transaction.create({
+                data: {
+                    reference: transactionRef,
+                    type: TransactionType.CR,
+                    status: TransactionStatus.COMPLETED,
+                    walletId: user.wallet.id,
+                    userId: user.id,
+                    amount: dto.amount,
+                    previousBalance: previousBalance,
+                    newBalance: newBalance
+                }
+            })
+            
+            return {wallet, transaction}
+
         });
     }
 }

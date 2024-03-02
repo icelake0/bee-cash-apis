@@ -6,16 +6,12 @@ import {
     Min,
   } from 'class-validator';
 
-export class SendMoneyDto {
-  @IsInt()
-  @IsNotEmpty()
-  receiverId: number;
-
-  @Min(0.01)
-  @Max(5000)
+export class TopUpWalletDto {
   @IsNumber({
     maxDecimalPlaces: 2
   })
   @IsNotEmpty()
+  @Min(0.01)
+  @Max(5000)
   amount: number;
 }

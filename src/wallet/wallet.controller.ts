@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
 import { WalletService } from './wallet.service';
-import { SendMoneyDto } from './dto';
+import { SendMoneyDto, TopUpWalletDto } from './dto';
 import { AuthUser } from 'src/auth/decorator';
 import { User } from '@prisma/client';
 import { ResponseFormatInterceptor } from 'src/interceptors';
@@ -23,5 +23,12 @@ export class WalletController {
     @Get('auth-user/view-wallet')
     viewWallet(@AuthUser() user: User) {
         return this.walletService.viewWallet(user);        
+    }
+
+    @HttpCode(HttpStatus.OK)
+    @UseInterceptors(new ResponseFormatInterceptor("Wallet topuped successful"))
+    @Post('auth-user/topup-wallet')
+    topupWallet(@AuthUser() user: User, @Body() dto: TopUpWalletDto) {
+        return this.walletService.topupWallet(user, dto);        
     }
 }
