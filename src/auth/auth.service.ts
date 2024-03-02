@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as argon from 'argon2';
-import { SigninDto, SignupDto } from './dto';
+import { SigninDto, SigninWithPinDto, SignupDto } from './dto';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
@@ -75,12 +75,48 @@ export class AuthService {
             'Credentials incorrect',
           );
         delete user.password;
+        delete user.pin;
         const access_token: string = await this.signToken(user.id, user.email);
         return {
             user,
             access_token
         }
-      }
+    }
+
+    async signinWithPin(dto: SigninWithPinDto) {
+        const user =
+          await this.prisma.user.findUnique({
+            where: {
+              email: dto.email,
+            },
+          });
+
+        if (!user)
+          throw new ForbiddenException(
+            'Credentials incorrect',
+          );
+
+        if (!user.pin)
+          throw new ForbiddenException(
+            'You are not setup for pin signin',
+          );
+    
+        const passwordIsvalid = await argon.verify(
+          user.pin,
+          dto.pin,
+        );
+        if (!passwordIsvalid)
+          throw new ForbiddenException(
+            'Credentials incorrect',
+          );
+        delete user.password;
+        delete user.pin;
+        const access_token: string = await this.signToken(user.id, user.email);
+        return {
+            user,
+            access_token
+        }
+    }
 
     async signToken(
         userId: number,

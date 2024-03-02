@@ -2,10 +2,9 @@ import { Body, Controller, Get, Patch, Put, UseGuards, UseInterceptors } from '@
 import { User } from '@prisma/client';
 import { AuthUser } from 'src/auth/decorator';
 import { JwtGuard } from 'src/auth/guard';
-import { UpdateUserDto, UpdateUserPasswordDto } from './dto';
+import { UpdateUserDto, UpdateUserPasswordDto, UpdateUserPinDto } from './dto';
 import { UserService } from './user.service';
 import { ResponseFormatInterceptor } from 'src/interceptors';
-import { UpdateUserPinDto } from './dto/update-user-pin.dto';
 
 @UseGuards(JwtGuard)
 @Controller('/api/v1/users')

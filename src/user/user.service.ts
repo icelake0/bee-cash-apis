@@ -1,10 +1,9 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UpdateUserDto, UpdateUserPasswordDto } from './dto';
+import { UpdateUserDto, UpdateUserPasswordDto, UpdateUserPinDto } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as argon from 'argon2';
-import { UpdateUserPinDto } from './dto/update-user-pin.dto';
 
 @Injectable()
 export class UserService {

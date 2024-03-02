@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, HttpStatus, Post, UseInterceptors } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { SigninDto, SignupDto } from './dto';
+import { SigninDto, SigninWithPinDto, SignupDto } from './dto';
 import { ResponseFormatInterceptor } from 'src/interceptors';
 
 @Controller('api/v1/auth')
@@ -18,5 +18,12 @@ export class AuthController {
     @Post('signin')
     signin(@Body() dto: SigninDto) {
       return this.authService.signin(dto);
+    }
+
+    @UseInterceptors(new ResponseFormatInterceptor("login successfully"))
+    @HttpCode(HttpStatus.OK)
+    @Post('signin-with-pin')
+    signinWithPin(@Body() dto: SigninWithPinDto) {
+      return this.authService.signinWithPin(dto);
     }
 }
