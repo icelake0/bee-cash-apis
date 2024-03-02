@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
 import { WalletService } from './wallet.service';
 import { SendMoneyDto } from './dto';
@@ -16,5 +16,12 @@ export class WalletController {
     @Post('make-payment')
     makePayment(@AuthUser() user: User, @Body() dto: SendMoneyDto) {
         return this.walletService.makePayment(user, dto);        
+    }
+
+    @HttpCode(HttpStatus.OK)
+    @UseInterceptors(new ResponseFormatInterceptor("Wallet found successful"))
+    @Get('auth-user/view-wallet')
+    viewWallet(@AuthUser() user: User) {
+        return this.walletService.viewWallet(user);        
     }
 }

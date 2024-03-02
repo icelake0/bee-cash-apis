@@ -118,4 +118,12 @@ export class WalletService {
 
         });
     }
+
+    async viewWallet(user: User) {
+        return await this.prisma.wallet.findUnique({
+            where: {
+                userId: user.id
+            }
+        });
+    }
 }
