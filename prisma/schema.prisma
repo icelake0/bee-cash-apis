@@ -16,6 +16,7 @@ model User {
   email String @unique
   username String @unique
   password  String
+  pin  String?
   firstName String
   lastName  String
   wallet Wallet?

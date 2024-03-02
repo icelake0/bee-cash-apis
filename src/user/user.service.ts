@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateUserDto, UpdateUserPasswordDto } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as argon from 'argon2';
+import { UpdateUserPinDto } from './dto/update-user-pin.dto';
 
 @Injectable()
 export class UserService {
@@ -70,6 +71,30 @@ export class UserService {
             },
         });
         delete updatedUser.password;
+        delete updatedUser.pin;
+        return updatedUser;
+    }
+
+    async updateAuthUserPin(authUser: User, dto: UpdateUserPinDto) {
+        const user =
+          await this.prisma.user.findUnique({
+            where: {
+              id: authUser.id,
+            },
+          });
+        
+        const pin = await argon.hash(dto.pin);
+
+        const updatedUser = await this.prisma.user.update({
+            where: {
+                id: user.id
+            },
+            data: {
+                pin: pin
+            },
+        });
+        delete updatedUser.password;
+        delete updatedUser.pin;
         return updatedUser;
     }
 }

@@ -5,6 +5,7 @@ import { JwtGuard } from 'src/auth/guard';
 import { UpdateUserDto, UpdateUserPasswordDto } from './dto';
 import { UserService } from './user.service';
 import { ResponseFormatInterceptor } from 'src/interceptors';
+import { UpdateUserPinDto } from './dto/update-user-pin.dto';
 
 @UseGuards(JwtGuard)
 @Controller('/api/v1/users')
@@ -27,5 +28,11 @@ export class UserController {
     @Patch('auth-user/update-password')
     updateAuthUserPassword(@AuthUser() user: User, @Body() dto: UpdateUserPasswordDto) {
        return  this.userService.updateAuthUserPassword(user, dto);
+    }
+
+    @UseInterceptors(new ResponseFormatInterceptor("Pin updated successfully"))
+    @Patch('auth-user/update-pin')
+    updateAuthUserPin(@AuthUser() user: User, @Body() dto: UpdateUserPinDto) {
+       return  this.userService.updateAuthUserPin(user, dto);
     }
 }
