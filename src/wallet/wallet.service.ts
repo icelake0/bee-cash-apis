@@ -35,9 +35,9 @@ export class WalletService {
                 throw new BadRequestException("Invalid recipient")
             }
 
-            if(sender.id == receiver.id) {
-                throw new BadRequestException("You can't make payment to yourself")
-            }
+            // if(sender.id == receiver.id) {
+            //     throw new BadRequestException("You can't make payment to yourself")
+            // }
 
             if(sender.wallet.balance < dto.amount) {
                 throw new BadRequestException('Insufficient funds')
