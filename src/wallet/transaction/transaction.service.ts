@@ -13,6 +13,9 @@ export class TransactionService {
         return await this.prisma.transaction.findMany({
             where: {
                 userId: user.id
+            },
+            orderBy: {
+                id: 'desc'
             }
         });
     }
